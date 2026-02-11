@@ -30,6 +30,7 @@
   <header>
     <h1>Task Manager</h1>
     <div class="header-actions">
+      <button type="button" id="infoBtn" class="icon-btn" aria-label="אודות האפליקציה" title="טכנולוגיות ואמצעים">ℹ</button>
       <button type="button" id="settingsBtn" class="icon-btn" aria-label="הגדרות אפליקציה" title="צבע וגודל">⚙</button>
       <button type="button" id="resetBtn" class="btn-reset" aria-label="איפוס כל המשימות">איפוס</button>
     </div>
@@ -68,6 +69,15 @@
       <button type="button" id="addTaskBtn" aria-label="הוסף משימה">הוסף משימה</button>
     </div>
 
+    <!-- חיפוש והיסטוריה -->
+    <div class="search-section">
+      <div class="search-wrap">
+        <input type="text" id="searchInput" placeholder="חפש במשימות או בתאריכים..." aria-label="חיפוש משימות" autocomplete="off" />
+        <button type="button" id="searchBtn" class="icon-btn-sm" aria-label="חפש">🔍</button>
+        <div id="searchHistory" class="search-history" hidden></div>
+      </div>
+    </div>
+
     <!-- חלק כפתורי סינון -->
     <div class="filter-buttons">
       <button type="button" id="filterAll" class="filter-btn active" aria-pressed="true">הכל</button>
@@ -83,8 +93,48 @@
   </main>
 
   <footer>
-    <p>ניהול משימות אישיות &copy; 2026</p>
+    <div class="footer-brand">
+      <span class="logo-mp" title="מיכאל פפיסמדוב">MP</span>
+      <p>מיכאל פפיסמדוב &copy; 2026 · כל הזכויות שמורות</p>
+    </div>
   </footer>
+
+  <!-- overlay למידע -->
+  <div id="infoOverlay" class="settings-overlay" hidden aria-hidden="true"></div>
+  <!-- חלון מידע -->
+  <div id="infoPanel" class="info-panel" hidden aria-hidden="true" role="dialog" aria-labelledby="infoTitle">
+    <div class="info-content">
+      <h3 id="infoTitle">אודות האפליקציה</h3>
+      <p class="info-intro">הפרויקט נבנה בהתאם לסילבוס המכללה – הנה הטכנולוגיות והאמצעים שבהם השתמשתי:</p>
+      <ul>
+        <li><strong>HTML5</strong> – תגיות סמנטיות, טפסים, מבנה נגיש</li>
+        <li><strong>CSS3</strong> – Flexbox, Transitions, Media Queries, משתנים</li>
+        <li><strong>JavaScript</strong> – DOM, Event Listeners, JSON</li>
+        <li><strong>Web Storage API</strong> – localStorage לאחסון מקומי</li>
+        <li><strong>Fetch API</strong> – יבוא נתונים מ-JSONPlaceholder</li>
+        <li><strong>Vite</strong> – בנייה ואופטימיזציה</li>
+      </ul>
+      <p class="info-note">לא רק מימוש – גם הבנה והסבר של כל רכיב.</p>
+      <button type="button" id="showTutorialAgainBtn" class="btn-link">הצג הדרכה שוב</button>
+      <button type="button" id="closeInfoBtn" class="btn-close">סגור</button>
+    </div>
+  </div>
+
+  <!-- הדרכה למשתמשים חדשים -->
+  <div id="tutorialOverlay" class="tutorial-overlay hidden">
+    <div id="tutorialPanel" class="tutorial-panel">
+      <h2>ברוכים הבאים!</h2>
+      <p>מדריך קצר לפני שמתחילים:</p>
+      <ol>
+        <li><strong>הוספת משימה</strong> – הזן תיאור ולחץ "הוסף משימה" (או Enter)</li>
+        <li><strong>חיפוש</strong> – השתמש בשורת החיפוש למציאת משימות לפי טקסט או תאריך</li>
+        <li><strong>סינון</strong> – הכל, פעילות או הושלמו</li>
+        <li><strong>מיון</strong> – מיון לפי תאריך יעד</li>
+        <li><strong>הגדרות</strong> – ⚙ לשינוי צבע וגודל</li>
+      </ol>
+      <button type="button" id="startTutorialBtn" class="btn-start">הבנתי, בואו נתחיל!</button>
+    </div>
+  </div>
 
   <script>
     (function() {

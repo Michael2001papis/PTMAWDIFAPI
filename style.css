@@ -216,6 +216,233 @@ header h1 {
   color: var(--text);
 }
 
+.btn-link {
+  display: block;
+  width: 100%;
+  padding: 0.4rem;
+  background: none;
+  color: var(--accent);
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+}
+
+/* חיפוש */
+.search-section {
+  margin-top: -0.5rem;
+}
+
+.search-wrap {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 0.5rem;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.search-wrap input {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  padding: 0.7rem 1rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.search-wrap input:focus {
+  outline: none;
+  border-color: var(--border-focus);
+}
+
+.icon-btn-sm {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid var(--border);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.icon-btn-sm:hover {
+  background: var(--accent);
+  color: white;
+}
+
+.search-history {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  margin-top: 0.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  max-height: 150px;
+  overflow-y: auto;
+  z-index: 50;
+  -webkit-box-shadow: var(--shadow);
+  box-shadow: var(--shadow);
+}
+
+.search-history-item {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.search-history-item:last-child {
+  border-bottom: none;
+}
+
+.search-history-item:hover {
+  background: var(--accent-soft);
+}
+
+/* Footer עם לוגו */
+.footer-brand {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 0.75rem;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+.logo-mp {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  background: var(--accent);
+  color: white;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  letter-spacing: -0.5px;
+}
+
+/* פאנל מידע */
+.info-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  background: var(--bg-card);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  -webkit-box-shadow: var(--shadow);
+  box-shadow: var(--shadow);
+  z-index: 1001;
+  max-width: 400px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.info-content h3 {
+  margin-bottom: 0.75rem;
+}
+
+.info-intro {
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.info-content ul {
+  margin: 0 0 1rem 1.25rem;
+  line-height: 1.8;
+}
+
+.info-note {
+  font-size: 0.9rem;
+  color: var(--accent);
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+/* הדרכה */
+.tutorial-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.tutorial-overlay.hidden {
+  display: none;
+}
+
+.tutorial-panel {
+  background: var(--bg-card);
+  padding: 2rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  max-width: 420px;
+  width: 100%;
+  -webkit-animation: panelIn 0.3s ease;
+  animation: panelIn 0.3s ease;
+}
+
+.tutorial-panel h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.tutorial-panel ol {
+  margin: 1rem 0 1.5rem 1.5rem;
+  line-height: 1.9;
+}
+
+.btn-start {
+  width: 100%;
+  padding: 0.9rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-start:hover {
+  background: var(--accent-hover);
+}
+
 /* Main */
 main {
   -webkit-box-flex: 1;

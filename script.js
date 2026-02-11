@@ -36,10 +36,23 @@ var settingsBtn = document.getElementById('settingsBtn');
 var settingsPanel = document.getElementById('settingsPanel');
 var settingsOverlay = document.getElementById('settingsOverlay');
 var closeSettingsBtn = document.getElementById('closeSettingsBtn');
+var searchInput = document.getElementById('searchInput');
+var searchBtn = document.getElementById('searchBtn');
+var searchHistoryEl = document.getElementById('searchHistory');
+var infoBtn = document.getElementById('infoBtn');
+var infoPanel = document.getElementById('infoPanel');
+var infoOverlay = document.getElementById('infoOverlay');
+var closeInfoBtn = document.getElementById('closeInfoBtn');
+var showTutorialAgainBtn = document.getElementById('showTutorialAgainBtn');
+var tutorialOverlay = document.getElementById('tutorialOverlay');
+var startTutorialBtn = document.getElementById('startTutorialBtn');
 
 // ========== State ==========
 var tasks = [];
 var currentFilter = 'all';
+var searchQuery = '';
+var SEARCH_HISTORY_KEY = 'taskManagerSearchHistory';
+var SEARCH_HISTORY_MAX = 10;
 
 // ========== localStorage Functions ==========
 
@@ -79,19 +92,31 @@ function saveTasks(tasksArray) {
  * @returns {Array} מערך מסונן
  */
 function filterTasks(tasksArray, filter) {
+  var result;
   switch (filter) {
     case 'completed':
-      return tasksArray.filter(function (task) {
+      result = tasksArray.filter(function (task) {
         return task.completed === true;
       });
+      break;
     case 'active':
-      return tasksArray.filter(function (task) {
+      result = tasksArray.filter(function (task) {
         return task.completed === false;
       });
+      break;
     case 'all':
     default:
-      return tasksArray.slice();
+      result = tasksArray.slice();
   }
+  if (searchQuery && searchQuery.trim()) {
+    var q = searchQuery.trim().toLowerCase();
+    result = result.filter(function (task) {
+      var textMatch = task.text && task.text.toLowerCase().indexOf(q) !== -1;
+      var dateMatch = task.dueDate && task.dueDate.indexOf(q) !== -1;
+      return textMatch || dateMatch;
+    });
+  }
+  return result;
 }
 
 // ========== Sort Function ==========
@@ -374,6 +399,34 @@ function initEventListeners() {
     renderTasks();
   });
 
+  if (searchInput) {
+    searchInput.addEventListener('input', function () {
+      searchQuery = searchInput.value;
+      renderTasks();
+    });
+    searchInput.addEventListener('focus', showSearchHistory);
+    searchInput.addEventListener('keypress', function (e) {
+      var key = e.key || e.keyCode;
+      if (key === 'Enter' || key === 13) performSearch();
+    });
+  }
+  if (searchBtn) searchBtn.addEventListener('click', performSearch);
+  document.addEventListener('click', function (e) {
+    if (searchHistoryEl && !searchHistoryEl.contains(e.target) && searchInput && !searchInput.contains(e.target) && searchBtn && !searchBtn.contains(e.target)) {
+      searchHistoryEl.hidden = true;
+    }
+  });
+
+  if (infoBtn) infoBtn.addEventListener('click', openInfo);
+  if (closeInfoBtn) closeInfoBtn.addEventListener('click', closeInfo);
+  if (infoOverlay) infoOverlay.addEventListener('click', closeInfo);
+  if (showTutorialAgainBtn) showTutorialAgainBtn.addEventListener('click', function () {
+    closeInfo();
+    localStorage.removeItem('taskManagerTutorialSeen');
+    if (tutorialOverlay) tutorialOverlay.classList.remove('hidden');
+  });
+  if (startTutorialBtn) startTutorialBtn.addEventListener('click', finishTutorial);
+
   if (resetBtn) resetBtn.addEventListener('click', resetAllTasks);
   if (settingsBtn) settingsBtn.addEventListener('click', openSettings);
   if (closeSettingsBtn) closeSettingsBtn.addEventListener('click', closeSettings);
@@ -382,8 +435,100 @@ function initEventListeners() {
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' || e.keyCode === 27) {
       if (settingsPanel && !settingsPanel.hidden) closeSettings();
+      else if (infoPanel && !infoPanel.hidden) closeInfo();
     }
   });
+}
+
+// ========== חיפוש והיסטוריה ==========
+function getSearchHistory() {
+  try {
+    var d = localStorage.getItem(SEARCH_HISTORY_KEY);
+    return d ? JSON.parse(d) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveSearchToHistory(term) {
+  if (!term || !term.trim()) return;
+  var h = getSearchHistory();
+  var t = term.trim();
+  var idx = h.indexOf(t);
+  if (idx !== -1) h.splice(idx, 1);
+  h.unshift(t);
+  if (h.length > SEARCH_HISTORY_MAX) h.pop();
+  localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(h));
+}
+
+function showSearchHistory() {
+  var h = getSearchHistory();
+  if (!searchHistoryEl) return;
+  if (h.length === 0) {
+    searchHistoryEl.hidden = true;
+    return;
+  }
+  searchHistoryEl.innerHTML = '';
+  for (var i = 0; i < h.length; i++) {
+    (function (term) {
+      var item = document.createElement('div');
+      item.className = 'search-history-item';
+      item.textContent = term;
+      item.addEventListener('click', function () {
+        searchQuery = term;
+        if (searchInput) searchInput.value = term;
+        searchHistoryEl.hidden = true;
+        renderTasks();
+      });
+      searchHistoryEl.appendChild(item);
+    })(h[i]);
+  }
+  searchHistoryEl.hidden = false;
+}
+
+function performSearch() {
+  if (searchInput) {
+    searchQuery = searchInput.value;
+    if (searchQuery.trim()) saveSearchToHistory(searchQuery);
+  }
+  renderTasks();
+}
+
+// ========== חלון מידע ==========
+function openInfo() {
+  if (infoPanel) {
+    infoPanel.hidden = false;
+    infoPanel.setAttribute('aria-hidden', 'false');
+  }
+  if (infoOverlay) {
+    infoOverlay.hidden = false;
+    infoOverlay.setAttribute('aria-hidden', 'false');
+  }
+  document.body.style.overflow = 'hidden';
+}
+
+function closeInfo() {
+  if (infoPanel) {
+    infoPanel.hidden = true;
+    infoPanel.setAttribute('aria-hidden', 'true');
+  }
+  if (infoOverlay) {
+    infoOverlay.hidden = true;
+    infoOverlay.setAttribute('aria-hidden', 'true');
+  }
+  document.body.style.overflow = '';
+  if (infoBtn) infoBtn.focus();
+}
+
+// ========== הדרכה ==========
+function finishTutorial() {
+  localStorage.setItem('taskManagerTutorialSeen', '1');
+  if (tutorialOverlay) tutorialOverlay.classList.add('hidden');
+}
+
+function showTutorialIfNeeded() {
+  if (localStorage.getItem('taskManagerTutorialSeen')) return;
+  if (tutorialOverlay) tutorialOverlay.classList.remove('hidden');
 }
 
 // ========== איפוס ==========
@@ -495,6 +640,7 @@ function init() {
   tasks = getTasks();
   initEventListeners();
   renderTasks(); // הצגה מיידית מהמטמון
+  showTutorialIfNeeded();
   // דחיית טעינת API ל-tick נפרד - מפחית "Long task" ומשפר ביצועים
   setTimeout(function () {
     fetchInitialTasks();
