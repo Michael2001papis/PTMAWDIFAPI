@@ -948,19 +948,28 @@ button {
 }
 
 .btn-favorite {
-  padding: 0.45rem 0.6rem;
+  padding: 0.45rem 0.65rem;
   background: transparent;
   color: var(--text-muted);
+  border: 1px solid transparent;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 1.15rem;
+  -webkit-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .btn-favorite:hover {
   color: #fbbf24;
+  background: rgba(251, 191, 36, 0.1);
 }
 
 .btn-favorite.active {
-  color: #fbbf24;
+  color: #f59e0b;
+  background: rgba(251, 191, 36, 0.25);
+  border-color: rgba(251, 191, 36, 0.5);
+  -webkit-box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.2);
+  box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.2);
 }
 
 .btn-edit {

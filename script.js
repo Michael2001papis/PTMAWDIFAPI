@@ -323,7 +323,7 @@ function renderTasks() {
 
     var favoriteBtn = document.createElement('button');
     favoriteBtn.className = 'btn-favorite' + (task.favorite ? ' active' : '');
-    favoriteBtn.textContent = '⭐';
+    favoriteBtn.textContent = task.favorite ? '⭐' : '☆';
     favoriteBtn.setAttribute('data-id', String(task.id));
     favoriteBtn.setAttribute('aria-label', task.favorite ? 'הסר ממועדפים' : 'הוסף למועדפים');
     favoriteBtn.title = task.favorite ? 'הסר ממועדפים' : 'הוסף למועדפים';
