@@ -5,7 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Task Manager</title>
-  <link rel="stylesheet" href="./style.css">
+  <script>
+    (function() {
+      var needBase = location.hostname.indexOf('github.io') !== -1 || location.pathname.indexOf('PTMAWDIFAPI') !== -1;
+      var b = document.createElement('base');
+      b.href = needBase ? '/PTMAWDIFAPI/' : './';
+      document.head.insertBefore(b, document.head.firstChild);
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
@@ -38,6 +46,6 @@
     <p>ניהול משימות אישיות &copy; 2026</p>
   </footer>
 
-  <script src="./script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

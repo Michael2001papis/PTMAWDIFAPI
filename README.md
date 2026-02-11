@@ -209,6 +209,11 @@ git remote remove origin
 
 ## ❓ פתרון בעיות
 
+### "script.js Failed to load 404" או "Unexpected token 'export'" ב-Console
+
+- **404 על script.js:** נוספה הגדרת `base` דינמית – האתר אמור לעבוד גם ב-GitHub Pages וגם מקומית. לאחר שינויים – הרצת `npm run build` ודחיפה ל-GitHub.
+- **Unexpected token 'export' (chrome-extension://...):** שגיאה מתוסף בדפדפן, לא מהקוד שלכם. ניתן להתעלם ממנה או לכבות הרחבות לבדיקה.
+
 ### "The repository does not contain the requested branch" / "ensure the repository is not empty"
 
 **סיבה:** הריפוזיטורי ב-GitHub ריק – אין עדיין קומיטים או ענף `main`.
