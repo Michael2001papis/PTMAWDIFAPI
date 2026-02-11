@@ -66,13 +66,14 @@ http://localhost:5173
 
 ```
 PTMAWDIFAPI/
-├── index.html      # דף HTML ראשי – מבנה הדף
-├── style.css       # עיצוב – צבעים, פריסה, אנימציות
-├── script.js       # לוגיקה – JavaScript
-├── package.json    # הגדרות הפרויקט ו־npm
-├── vite.config.js  # הגדרות בניית Vite
-├── .gitignore      # קבצים להתעלמות (node_modules, dist)
-└── README.md       # קובץ זה
+├── index.html         # דף HTML ראשי – מבנה הדף
+├── style.css          # עיצוב – צבעים, פריסה, אנימציות
+├── script.js          # לוגיקה – JavaScript
+├── package.json       # הגדרות הפרויקט ו־npm
+├── vite.config.js    # הגדרות בניית Vite
+├── .gitignore         # קבצים להתעלמות (node_modules, dist)
+├── push-to-github.bat # סקריפט להעלאה ל-GitHub
+└── README.md          # קובץ זה
 ```
 
 ### לאחר בנייה (`npm run build`):
@@ -178,15 +179,31 @@ git push -u origin main
 
 > ⚠️ **אם הריפוזיטורי ריק** – שירותים כמו Vercel, Netlify או GitHub Pages לא ימצאו ענף. הרצת הפקודות למעלה פותרת את הבעיה.
 
+### העלאה מהירה ל-GitHub (כשמופיע "Start coding with Codespaces")
+
+כשהריפוזיטורי ריק, GitHub מציג "Start coding with Codespaces". כדי שהקבצים יופיעו:
+
+**אפשרות א׳ – הרצת הסקריפט (מומלץ):**
+לחצו פעמיים על `push-to-github.bat` בתיקיית הפרויקט.
+
+**אפשרות ב׳ – ידנית בטרמינל:**
+```bash
+git remote add origin https://github.com/Michael2001papis/PTMAWDIFAPI.git
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git push -u origin main
+```
+
+> 💡 אם נדרשת התחברות ל-GitHub, השתמשו ב-[Personal Access Token](https://github.com/settings/tokens) במקום סיסמה.
+
 ### הסרת חיבור ל-Remote (להשאיר את הפרויקט מקומי בלבד)
 
-אם אינכם רוצים את הקבצים ב-GitHub ואין צורך בריפוזיטורי מרוחק:
+אם אינכם רוצים את הקבצים ב-GitHub:
 
 ```bash
 git remote remove origin
 ```
-
-לאחר הפקודה הפרויקט יישאר מקומי – Git ימשיך לעבוד בשפע, אבל לא יהיה חיבור ל-GitHub.
 
 ---
 
