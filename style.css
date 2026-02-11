@@ -1,0 +1,383 @@
+/* משתנים גלובליים */
+:root {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-active: #1e40af;
+  --success: #10b981;
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --border: #e2e8f0;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  line-height: 1.6;
+}
+
+/* Header */
+header {
+  background: var(--primary);
+  background: -webkit-linear-gradient(135deg, var(--primary) 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, #3b82f6 100%);
+  color: white;
+  padding: 1.5rem 2rem;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+/* Main */
+main {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Fallback for browsers that don't support gap */
+@supports not (gap: 1rem) {
+  main > * + * {
+    margin-top: 1.5rem;
+  }
+}
+
+/* חלק קלט המשימות */
+.task-input-section {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  background: var(--bg-card);
+  padding: 1.25rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+@supports not (gap: 0.75rem) {
+  .task-input-section > * + * {
+    margin: 0.375rem 0 0 0.375rem;
+  }
+}
+
+.task-input-section input[type="text"] {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 180px;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+  -webkit-transition: border-color 0.2s ease;
+  -o-transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease;
+}
+
+.task-input-section input[type="text"]:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.task-input-section input[type="date"] {
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+  -webkit-transition: border-color 0.2s ease;
+  -o-transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease;
+}
+
+.task-input-section input[type="date"]:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* כפתורים כלליים */
+button {
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  -webkit-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+#addTaskBtn {
+  background: var(--primary);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+}
+
+#addTaskBtn:hover {
+  background: var(--primary-hover);
+  -webkit-transform: translateY(-1px);
+  -ms-transform: translateY(-1px);
+  transform: translateY(-1px);
+}
+
+#addTaskBtn:active {
+  background: var(--primary-active);
+  -webkit-transform: translateY(0);
+  -ms-transform: translateY(0);
+  transform: translateY(0);
+}
+
+/* כפתורי סינון */
+.filter-buttons {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 0.5rem;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+@supports not (gap: 0.5rem) {
+  .filter-buttons > * + * {
+    margin-right: 0.5rem;
+  }
+}
+
+.filter-btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: 2px solid var(--border);
+}
+
+.filter-btn:hover {
+  background: var(--bg-main);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.filter-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* חלק רשימת המשימות */
+.task-list-section {
+  background: var(--bg-card);
+  padding: 1.25rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+#sortByDateBtn {
+  display: block;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  border-radius: 8px;
+  border: 2px solid var(--border);
+}
+
+#sortByDateBtn:hover {
+  background: var(--border);
+  border-color: var(--text-secondary);
+}
+
+#taskList {
+  list-style: none;
+}
+
+#taskList li {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  background: var(--bg-main);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  -webkit-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+}
+
+@supports not (gap: 1rem) {
+  #taskList li > * + * {
+    margin-right: 1rem;
+  }
+}
+
+#taskList li:hover {
+  border-color: var(--border);
+}
+
+#taskList li.completed {
+  opacity: 0.7;
+}
+
+#taskList li.completed .task-text {
+  text-decoration: line-through;
+  color: var(--text-secondary);
+}
+
+.task-text {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  word-break: break-word;
+}
+
+.task-date {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.task-actions {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 0.5rem;
+}
+
+@supports not (gap: 0.5rem) {
+  .task-actions > * + * {
+    margin-right: 0.5rem;
+  }
+}
+
+.btn-complete {
+  padding: 0.4rem 0.8rem;
+  background: var(--success);
+  color: white;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
+.btn-complete:hover {
+  opacity: 0.9;
+  -webkit-transform: scale(1.05);
+  -ms-transform: scale(1.05);
+  transform: scale(1.05);
+}
+
+.btn-complete:active {
+  -webkit-transform: scale(0.98);
+  -ms-transform: scale(0.98);
+  transform: scale(0.98);
+}
+
+.btn-delete {
+  padding: 0.4rem 0.8rem;
+  background: var(--danger);
+  color: white;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
+.btn-delete:hover {
+  background: var(--danger-hover);
+  -webkit-transform: scale(1.05);
+  -ms-transform: scale(1.05);
+  transform: scale(1.05);
+}
+
+.btn-delete:active {
+  -webkit-transform: scale(0.98);
+  -ms-transform: scale(0.98);
+  transform: scale(0.98);
+}
+
+/* Footer */
+footer {
+  background: var(--bg-card);
+  padding: 1rem 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  border-top: 1px solid var(--border);
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  main {
+    padding: 1rem;
+  }
+
+  .task-input-section {
+    flex-direction: column;
+  }
+
+  .task-input-section input[type="text"],
+  .task-input-section input[type="date"] {
+    min-width: 100%;
+  }
+
+  #addTaskBtn {
+    width: 100%;
+  }
+
+  #taskList li {
+    flex-wrap: wrap;
+  }
+
+  .task-date {
+    width: 100%;
+    order: 2;
+  }
+
+  .task-actions {
+    margin-right: auto;
+  }
+}

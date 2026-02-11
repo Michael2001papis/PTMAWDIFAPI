@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Task Manager</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header>
+    <h1>Task Manager</h1>
+  </header>
+
+  <main>
+    <!-- חלק קלט המשימות -->
+    <div class="task-input-section">
+      <input type="text" id="taskInput" placeholder="הזן תיאור המשימה..." />
+      <input type="date" id="dueDateInput" />
+      <button type="button" id="addTaskBtn">הוסף משימה</button>
+    </div>
+
+    <!-- חלק כפתורי סינון -->
+    <div class="filter-buttons">
+      <button type="button" id="filterAll" class="filter-btn active">הכל</button>
+      <button type="button" id="filterActive" class="filter-btn">פעילות</button>
+      <button type="button" id="filterCompleted" class="filter-btn">הושלמו</button>
+    </div>
+
+    <!-- חלק רשימת המשימות -->
+    <div class="task-list-section">
+      <button type="button" id="sortByDateBtn">מיין לפי תאריך יעד</button>
+      <ul id="taskList"></ul>
+    </div>
+  </main>
+
+  <footer>
+    <p>ניהול משימות אישיות &copy; 2026</p>
+  </footer>
+
+  <script src="./script.js"></script>
+</body>
+</html>
