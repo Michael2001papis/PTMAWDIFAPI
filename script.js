@@ -3,6 +3,25 @@
  * כולל יבוא נתונים מ-API
  */
 
+// ========== הודעות ==========
+var msgEl = null;
+function showMessage(text) {
+  var existing = document.getElementById('taskMessage');
+  if (existing) existing.remove();
+  msgEl = document.createElement('div');
+  msgEl.id = 'taskMessage';
+  msgEl.className = 'task-message';
+  msgEl.textContent = text;
+  msgEl.setAttribute('role', 'alert');
+  var main = document.querySelector('main');
+  if (main) {
+    main.insertBefore(msgEl, main.firstChild);
+    setTimeout(function () {
+      if (msgEl && msgEl.parentNode) msgEl.remove();
+    }, 3000);
+  }
+}
+
 // ========== DOM Elements ==========
 var taskInput = document.getElementById('taskInput');
 var dueDateInput = document.getElementById('dueDateInput');
@@ -97,6 +116,14 @@ function renderTasks() {
   taskList.innerHTML = '';
   var filtered = filterTasks(tasks, currentFilter);
 
+  if (filtered.length === 0) {
+    var emptyMsg = document.createElement('li');
+    emptyMsg.className = 'empty-state';
+    emptyMsg.innerHTML = '<span class="empty-text">אין משימות. הוסף משימה חדשה למעלה!</span>';
+    taskList.appendChild(emptyMsg);
+    return;
+  }
+
   filtered.forEach(function (task) {
     var li = document.createElement('li');
     if (task.completed) {
@@ -118,11 +145,13 @@ function renderTasks() {
     completeBtn.className = 'btn-complete';
     completeBtn.textContent = task.completed ? 'בטל השלמה' : 'הושלם';
     completeBtn.setAttribute('data-id', String(task.id));
+    completeBtn.setAttribute('aria-label', task.completed ? 'בטל השלמה' : 'סמן כהושלם');
 
     var deleteBtn = document.createElement('button');
     deleteBtn.className = 'btn-delete';
     deleteBtn.textContent = 'מחק';
     deleteBtn.setAttribute('data-id', String(task.id));
+    deleteBtn.setAttribute('aria-label', 'מחק משימה');
 
     actionsDiv.appendChild(completeBtn);
     actionsDiv.appendChild(deleteBtn);
@@ -156,7 +185,8 @@ function addTask() {
   var dueDate = dueDateInput ? dueDateInput.value : '';
 
   if (!text) {
-    alert('יש להזין תיאור למשימה');
+    showMessage('יש להזין תיאור למשימה');
+    if (taskInput) taskInput.focus();
     return;
   }
 
@@ -173,6 +203,7 @@ function addTask() {
 
   taskInput.value = '';
   if (dueDateInput) dueDateInput.value = '';
+  taskInput.focus();
 }
 
 // ========== Toggle Complete ==========
@@ -218,10 +249,18 @@ function deleteTask(id) {
  */
 function setFilter(filter) {
   currentFilter = filter;
-  // תאימות: classList.toggle עם פרמטר שני לא נתמך בדפדפנים ישנים
-  if (filterAllBtn) filterAllBtn.classList[filter === 'all' ? 'add' : 'remove']('active');
-  if (filterActiveBtn) filterActiveBtn.classList[filter === 'active' ? 'add' : 'remove']('active');
-  if (filterCompletedBtn) filterCompletedBtn.classList[filter === 'completed' ? 'add' : 'remove']('active');
+  if (filterAllBtn) {
+    filterAllBtn.classList[filter === 'all' ? 'add' : 'remove']('active');
+    filterAllBtn.setAttribute('aria-pressed', filter === 'all' ? 'true' : 'false');
+  }
+  if (filterActiveBtn) {
+    filterActiveBtn.classList[filter === 'active' ? 'add' : 'remove']('active');
+    filterActiveBtn.setAttribute('aria-pressed', filter === 'active' ? 'true' : 'false');
+  }
+  if (filterCompletedBtn) {
+    filterCompletedBtn.classList[filter === 'completed' ? 'add' : 'remove']('active');
+    filterCompletedBtn.setAttribute('aria-pressed', filter === 'completed' ? 'true' : 'false');
+  }
   renderTasks();
 }
 
@@ -292,7 +331,7 @@ function fetchInitialTasks() {
     })
     .catch(function (error) {
       console.error('שגיאה בטעינת משימות מ-API:', error);
-      alert('לא ניתן לטעון משימות מהשרת. נסה שוב מאוחר יותר.');
+      showMessage('לא ניתן לטעון משימות מהשרת. נסה שוב מאוחר יותר.');
     });
 }
 
