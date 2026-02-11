@@ -29,6 +29,7 @@ var addTaskBtn = document.getElementById('addTaskBtn');
 var filterAllBtn = document.getElementById('filterAll');
 var filterActiveBtn = document.getElementById('filterActive');
 var filterCompletedBtn = document.getElementById('filterCompleted');
+var filterFavoritesBtn = document.getElementById('filterFavorites');
 var sortByDateBtn = document.getElementById('sortByDateBtn');
 var taskList = document.getElementById('taskList');
 var resetBtn = document.getElementById('resetBtn');
@@ -46,6 +47,24 @@ var closeInfoBtn = document.getElementById('closeInfoBtn');
 var showTutorialAgainBtn = document.getElementById('showTutorialAgainBtn');
 var tutorialOverlay = document.getElementById('tutorialOverlay');
 var startTutorialBtn = document.getElementById('startTutorialBtn');
+var authBtn = document.getElementById('authBtn');
+var logoutBtn = document.getElementById('logoutBtn');
+var userGreeting = document.getElementById('userGreeting');
+var userNameDisplay = document.getElementById('userNameDisplay');
+var authOverlay = document.getElementById('authOverlay');
+var authPanel = document.getElementById('authPanel');
+var closeAuthBtn = document.getElementById('closeAuthBtn');
+var authTabLogin = document.getElementById('authTabLogin');
+var authTabRegister = document.getElementById('authTabRegister');
+var authFormLogin = document.getElementById('authFormLogin');
+var authFormRegister = document.getElementById('authFormRegister');
+var loginPhone = document.getElementById('loginPhone');
+var loginPassword = document.getElementById('loginPassword');
+var loginSubmitBtn = document.getElementById('loginSubmitBtn');
+var registerName = document.getElementById('registerName');
+var registerPhone = document.getElementById('registerPhone');
+var registerPassword = document.getElementById('registerPassword');
+var registerSubmitBtn = document.getElementById('registerSubmitBtn');
 
 // ========== State ==========
 var tasks = [];
@@ -53,6 +72,8 @@ var currentFilter = 'all';
 var searchQuery = '';
 var SEARCH_HISTORY_KEY = 'taskManagerSearchHistory';
 var SEARCH_HISTORY_MAX = 10;
+var USERS_KEY = 'taskManagerUsers';
+var CURRENT_USER_KEY = 'taskManagerCurrentUser';
 
 // ========== localStorage Functions ==========
 
@@ -83,6 +104,118 @@ function saveTasks(tasksArray) {
   localStorage.setItem('tasks', jsonString);
 }
 
+// ========== משתמשים (localStorage) ==========
+function getUsers() {
+  var data = localStorage.getItem(USERS_KEY);
+  if (data) {
+    try {
+      var parsed = JSON.parse(data);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+  return [];
+}
+
+function saveUsers(usersArray) {
+  localStorage.setItem(USERS_KEY, JSON.stringify(usersArray));
+}
+
+function getCurrentUser() {
+  var data = localStorage.getItem(CURRENT_USER_KEY);
+  if (data) {
+    try {
+      return JSON.parse(data);
+    } catch (e) {
+      return null;
+    }
+  }
+  return null;
+}
+
+function setCurrentUser(user) {
+  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+}
+
+function clearCurrentUser() {
+  localStorage.removeItem(CURRENT_USER_KEY);
+}
+
+function isLoggedIn() {
+  return !!getCurrentUser();
+}
+
+function register(fullName, phone, password) {
+  var name = (fullName || '').trim();
+  var tel = (phone || '').trim().replace(/\s/g, '');
+  var pwd = password || '';
+
+  if (!name || !tel || !pwd) {
+    showMessage('יש למלא שם מלא, טלפון וסיסמה');
+    return false;
+  }
+
+  var users = getUsers();
+  for (var i = 0; i < users.length; i++) {
+    if (users[i].phone === tel) {
+      showMessage('הטלפון כבר רשום. התחבר לחשבון הקיים.');
+      return false;
+    }
+  }
+
+  users.push({ fullName: name, phone: tel, password: pwd });
+  saveUsers(users);
+  setCurrentUser({ fullName: name, phone: tel });
+  return true;
+}
+
+function login(phone, password) {
+  var tel = (phone || '').trim().replace(/\s/g, '');
+  var pwd = password || '';
+
+  if (!tel || !pwd) {
+    showMessage('יש להזין טלפון וסיסמה');
+    return false;
+  }
+
+  var users = getUsers();
+  for (var i = 0; i < users.length; i++) {
+    if (users[i].phone === tel && users[i].password === pwd) {
+      setCurrentUser({ fullName: users[i].fullName, phone: users[i].phone });
+      return true;
+    }
+  }
+  showMessage('טלפון או סיסמה שגויים');
+  return false;
+}
+
+function logout() {
+  clearCurrentUser();
+  updateAuthUI();
+  renderTasks();
+}
+
+function updateAuthUI() {
+  var user = getCurrentUser();
+  if (user) {
+    if (authBtn) authBtn.classList.add('hidden');
+    if (logoutBtn) logoutBtn.classList.remove('hidden');
+    if (userGreeting) userGreeting.classList.remove('hidden');
+    if (userNameDisplay) userNameDisplay.textContent = user.fullName || user.phone;
+  } else {
+    if (authBtn) authBtn.classList.remove('hidden');
+    if (logoutBtn) logoutBtn.classList.add('hidden');
+    if (userGreeting) userGreeting.classList.add('hidden');
+  }
+  if (filterFavoritesBtn) {
+    filterFavoritesBtn.style.display = user ? '' : 'none';
+  }
+  if (currentFilter === 'favorites' && !user) {
+    setFilter('all');
+  }
+}
+
 // ========== Filter Function ==========
 
 /**
@@ -102,6 +235,11 @@ function filterTasks(tasksArray, filter) {
     case 'active':
       result = tasksArray.filter(function (task) {
         return task.completed === false;
+      });
+      break;
+    case 'favorites':
+      result = tasksArray.filter(function (task) {
+        return task.favorite === true;
       });
       break;
     case 'all':
@@ -155,10 +293,11 @@ function renderTasks() {
   }
 
   filtered.forEach(function (task) {
+    if (task.favorite === undefined) task.favorite = false;
+
     var li = document.createElement('li');
-    if (task.completed) {
-      li.classList.add('completed');
-    }
+    if (task.completed) li.classList.add('completed');
+    if (task.favorite) li.classList.add('favorite');
 
     var textSpan = document.createElement('span');
     textSpan.className = 'task-text';
@@ -170,6 +309,23 @@ function renderTasks() {
 
     var actionsDiv = document.createElement('div');
     actionsDiv.className = 'task-actions';
+
+    var loggedIn = isLoggedIn();
+
+    var favoriteBtn = document.createElement('button');
+    favoriteBtn.className = 'btn-favorite' + (task.favorite ? ' active' : '');
+    favoriteBtn.textContent = '⭐';
+    favoriteBtn.setAttribute('data-id', String(task.id));
+    favoriteBtn.setAttribute('aria-label', task.favorite ? 'הסר ממועדפים' : 'הוסף למועדפים');
+    favoriteBtn.title = task.favorite ? 'הסר ממועדפים' : 'הוסף למועדפים';
+    if (!loggedIn) favoriteBtn.style.display = 'none';
+
+    var editBtn = document.createElement('button');
+    editBtn.className = 'btn-edit';
+    editBtn.textContent = '✎';
+    editBtn.setAttribute('data-id', String(task.id));
+    editBtn.setAttribute('aria-label', 'ערוך משימה');
+    if (!loggedIn) editBtn.style.display = 'none';
 
     var completeBtn = document.createElement('button');
     completeBtn.className = 'btn-complete';
@@ -183,6 +339,8 @@ function renderTasks() {
     deleteBtn.setAttribute('data-id', String(task.id));
     deleteBtn.setAttribute('aria-label', 'מחק משימה');
 
+    actionsDiv.appendChild(favoriteBtn);
+    actionsDiv.appendChild(editBtn);
     actionsDiv.appendChild(completeBtn);
     actionsDiv.appendChild(deleteBtn);
 
@@ -190,12 +348,19 @@ function renderTasks() {
     li.appendChild(dateSpan);
     li.appendChild(actionsDiv);
 
-    // מאזין להשלמה
+    if (loggedIn) {
+      favoriteBtn.addEventListener('click', function () {
+        toggleFavorite(task.id);
+      });
+      editBtn.addEventListener('click', function () {
+        enterEditMode(li, task);
+      });
+    }
+
     completeBtn.addEventListener('click', function () {
       toggleComplete(task.id);
     });
 
-    // מאזין למחיקה
     deleteBtn.addEventListener('click', function () {
       deleteTask(task.id);
     });
@@ -225,6 +390,7 @@ function addTask() {
     text: text.substring(0, 500),
     dueDate: dueDate || null,
     completed: false,
+    favorite: false,
   };
 
   tasks.push(newTask);
@@ -271,11 +437,104 @@ function deleteTask(id) {
   renderTasks();
 }
 
+// ========== מועדפים ==========
+function toggleFavorite(id) {
+  var task = null;
+  for (var i = 0; i < tasks.length; i++) {
+    if (tasks[i].id === id) {
+      task = tasks[i];
+      break;
+    }
+  }
+  if (task) {
+    task.favorite = !task.favorite;
+    saveTasks(tasks);
+    renderTasks();
+  }
+}
+
+// ========== עריכת משימה ==========
+function enterEditMode(li, task) {
+  if (li.classList.contains('editing')) return;
+  li.classList.add('editing');
+  var oldText = task.text;
+  var oldDate = task.dueDate || '';
+
+  var editHtml = '<div class="edit-mode">';
+  editHtml += '<input type="text" class="edit-text" value="' + escapeHtml(oldText) + '" maxlength="500" />';
+  editHtml += '<input type="date" class="edit-date" value="' + escapeHtml(oldDate) + '" />';
+  editHtml += '<button type="button" class="btn-save-edit">שמור</button>';
+  editHtml += '<button type="button" class="btn-cancel-edit">ביטול</button>';
+  editHtml += '</div>';
+
+  var content = li.querySelector('.task-text');
+  var dateSpan = li.querySelector('.task-date');
+  var actions = li.querySelector('.task-actions');
+  content.style.display = 'none';
+  dateSpan.style.display = 'none';
+  actions.style.display = 'none';
+
+  var editWrap = document.createElement('div');
+  editWrap.className = 'edit-wrap';
+  editWrap.innerHTML = editHtml;
+  li.insertBefore(editWrap, li.firstChild);
+
+  var editText = editWrap.querySelector('.edit-text');
+  var editDate = editWrap.querySelector('.edit-date');
+  var saveBtn = editWrap.querySelector('.btn-save-edit');
+  var cancelBtn = editWrap.querySelector('.btn-cancel-edit');
+
+  editText.focus();
+
+  function exitEdit() {
+    document.removeEventListener('keydown', onEsc);
+    li.classList.remove('editing');
+    editWrap.remove();
+    content.style.display = '';
+    dateSpan.style.display = '';
+    actions.style.display = '';
+  }
+
+  function onEsc(e) {
+    var key = e.key || e.keyCode;
+    if (key === 'Escape' || key === 27) {
+      cancelBtn.click();
+    }
+  }
+
+  saveBtn.addEventListener('click', function () {
+    var newText = editText.value.trim();
+    if (newText) {
+      task.text = newText.substring(0, 500);
+      task.dueDate = editDate.value || null;
+      saveTasks(tasks);
+    }
+    exitEdit();
+    renderTasks();
+  });
+
+  cancelBtn.addEventListener('click', exitEdit);
+
+  editText.addEventListener('keypress', function (e) {
+    var key = e.key || e.keyCode;
+    if (key === 'Enter' || key === 13) saveBtn.click();
+  });
+
+  document.addEventListener('keydown', onEsc);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  var div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
 // ========== Update Filter ==========
 
 /**
  * מעדכן את פילטר התצוגה ומרענן
- * @param {string} filter - 'all' | 'active' | 'completed'
+ * @param {string} filter - 'all' | 'active' | 'completed' | 'favorites'
  */
 function setFilter(filter) {
   currentFilter = filter;
@@ -290,6 +549,10 @@ function setFilter(filter) {
   if (filterCompletedBtn) {
     filterCompletedBtn.classList[filter === 'completed' ? 'add' : 'remove']('active');
     filterCompletedBtn.setAttribute('aria-pressed', filter === 'completed' ? 'true' : 'false');
+  }
+  if (filterFavoritesBtn) {
+    filterFavoritesBtn.classList[filter === 'favorites' ? 'add' : 'remove']('active');
+    filterFavoritesBtn.setAttribute('aria-pressed', filter === 'favorites' ? 'true' : 'false');
   }
   renderTasks();
 }
@@ -345,12 +608,13 @@ function fetchInitialTasks() {
   fetchFromAPI(API_URL)
     .then(function (data) {
       var mappedTasks = (Array.isArray(data) ? data : []).map(function (item) {
-        return {
-          id: (item && item.id ? item.id : 0) + 100000,
-          text: (item && item.title) ? item.title : 'משימה',
-          dueDate: null,
-          completed: !!(item && item.completed),
-        };
+      return {
+        id: (item && item.id ? item.id : 0) + 100000,
+        text: (item && item.title) ? item.title : 'משימה',
+        dueDate: null,
+        completed: !!(item && item.completed),
+        favorite: false,
+      };
       });
 
       if (tasks.length === 0) {
@@ -392,6 +656,9 @@ function initEventListeners() {
   if (filterCompletedBtn) filterCompletedBtn.addEventListener('click', function () {
     setFilter('completed');
   });
+  if (filterFavoritesBtn) filterFavoritesBtn.addEventListener('click', function () {
+    setFilter('favorites');
+  });
 
   if (sortByDateBtn) sortByDateBtn.addEventListener('click', function () {
     tasks = sortTasks(tasks);
@@ -432,12 +699,80 @@ function initEventListeners() {
   if (closeSettingsBtn) closeSettingsBtn.addEventListener('click', closeSettings);
   if (settingsOverlay) settingsOverlay.addEventListener('click', closeSettings);
 
+  if (authBtn) authBtn.addEventListener('click', openAuth);
+  if (logoutBtn) logoutBtn.addEventListener('click', logout);
+  if (closeAuthBtn) closeAuthBtn.addEventListener('click', closeAuth);
+  if (authOverlay) authOverlay.addEventListener('click', closeAuth);
+  if (authTabLogin) authTabLogin.addEventListener('click', function () {
+    authTabLogin.classList.add('active');
+    if (authTabRegister) authTabRegister.classList.remove('active');
+    if (authFormLogin) authFormLogin.classList.remove('hidden');
+    if (authFormRegister) authFormRegister.classList.add('hidden');
+  });
+  if (authTabRegister) authTabRegister.addEventListener('click', function () {
+    authTabRegister.classList.add('active');
+    if (authTabLogin) authTabLogin.classList.remove('active');
+    if (authFormRegister) authFormRegister.classList.remove('hidden');
+    if (authFormLogin) authFormLogin.classList.add('hidden');
+  });
+  if (loginSubmitBtn) loginSubmitBtn.addEventListener('click', function () {
+    if (login(loginPhone ? loginPhone.value : '', loginPassword ? loginPassword.value : '')) {
+      closeAuth();
+      updateAuthUI();
+      renderTasks();
+      showMessage('התחברת בהצלחה');
+    }
+  });
+  if (registerSubmitBtn) registerSubmitBtn.addEventListener('click', function () {
+    if (register(
+      registerName ? registerName.value : '',
+      registerPhone ? registerPhone.value : '',
+      registerPassword ? registerPassword.value : ''
+    )) {
+      closeAuth();
+      updateAuthUI();
+      renderTasks();
+      showMessage('נרשמת בהצלחה');
+    }
+  });
+
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' || e.keyCode === 27) {
-      if (settingsPanel && !settingsPanel.hidden) closeSettings();
+      if (authPanel && !authPanel.hidden) closeAuth();
+      else if (settingsPanel && !settingsPanel.hidden) closeSettings();
       else if (infoPanel && !infoPanel.hidden) closeInfo();
     }
   });
+}
+
+function openAuth() {
+  if (authPanel) {
+    authPanel.hidden = false;
+    authPanel.setAttribute('aria-hidden', 'false');
+    authTabLogin.classList.add('active');
+    if (authTabRegister) authTabRegister.classList.remove('active');
+    if (authFormLogin) authFormLogin.classList.remove('hidden');
+    if (authFormRegister) authFormRegister.classList.add('hidden');
+    if (loginPhone) loginPhone.focus();
+  }
+  if (authOverlay) {
+    authOverlay.hidden = false;
+    authOverlay.setAttribute('aria-hidden', 'false');
+  }
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAuth() {
+  if (authPanel) {
+    authPanel.hidden = true;
+    authPanel.setAttribute('aria-hidden', 'true');
+  }
+  if (authOverlay) {
+    authOverlay.hidden = true;
+    authOverlay.setAttribute('aria-hidden', 'true');
+  }
+  document.body.style.overflow = '';
+  if (authBtn) authBtn.focus();
 }
 
 // ========== חיפוש והיסטוריה ==========
@@ -637,6 +972,7 @@ function initSettings() {
 
 function init() {
   initSettings();
+  updateAuthUI();
   tasks = getTasks();
   initEventListeners();
   renderTasks(); // הצגה מיידית מהמטמון

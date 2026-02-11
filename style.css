@@ -69,8 +69,61 @@ header h1 {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 1rem;
+}
+
+/* משתמש - התחברות */
+.user-status {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-greeting {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.user-greeting.hidden,
+.btn-auth.hidden,
+.btn-logout.hidden {
+  display: none !important;
+}
+
+.btn-auth {
+  padding: 0.4rem 0.85rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btn-auth:hover {
+  background: var(--accent-hover);
+}
+
+.btn-logout {
+  padding: 0.4rem 0.85rem;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btn-logout:hover {
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 .icon-btn {
@@ -146,6 +199,108 @@ header h1 {
 .settings-panel h3 {
   margin-bottom: 1rem;
   font-size: 1.25rem;
+}
+
+/* פאנל התחברות */
+.auth-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  background: var(--bg-card);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  -webkit-box-shadow: var(--shadow);
+  box-shadow: var(--shadow);
+  z-index: 1000;
+  max-width: 360px;
+  width: 90%;
+}
+
+.auth-panel h3 {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.auth-tabs {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.auth-tab {
+  padding: 0.5rem 1rem;
+  background: var(--bg-input);
+  color: var(--text-muted);
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.auth-tab:hover {
+  color: var(--text);
+}
+
+.auth-tab.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.auth-form label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 1rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.auth-form input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.btn-auth-submit {
+  width: 100%;
+  padding: 0.65rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.btn-auth-submit:hover {
+  background: var(--accent-hover);
+}
+
+.auth-note {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.auth-form.hidden {
+  display: none !important;
 }
 
 .settings-group {
@@ -769,6 +924,108 @@ button {
   background: var(--danger);
   color: white;
 }
+
+.btn-favorite {
+  padding: 0.45rem 0.6rem;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.btn-favorite:hover {
+  color: #fbbf24;
+}
+
+.btn-favorite.active {
+  color: #fbbf24;
+}
+
+.btn-edit {
+  padding: 0.45rem 0.7rem;
+  background: var(--bg-input);
+  color: var(--text-muted);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.btn-edit:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* מצב עריכה */
+#taskList li.editing .edit-wrap {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 0.5rem;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.edit-mode {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 0.5rem;
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+.edit-mode input[type="text"] {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 120px;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+}
+
+.edit-mode input[type="date"] {
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+}
+
+.btn-save-edit {
+  padding: 0.5rem 0.75rem;
+  background: var(--success);
+  color: white;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.btn-save-edit:hover {
+  opacity: 0.9;
+}
+
+.btn-cancel-edit {
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-input);
+  color: var(--text-muted);
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.btn-cancel-edit:hover {
+  background: var(--border);
+}
+
 
 /* Footer */
 footer {

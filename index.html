@@ -30,11 +30,47 @@
   <header>
     <h1>Task Manager</h1>
     <div class="header-actions">
+      <div id="userStatus" class="user-status">
+        <span id="userGreeting" class="user-greeting hidden">שלום, <strong id="userNameDisplay"></strong></span>
+        <button type="button" id="authBtn" class="btn-auth" aria-label="התחבר או הירשם">התחבר / הירשם</button>
+        <button type="button" id="logoutBtn" class="btn-logout hidden" aria-label="התנתק">התנתק</button>
+      </div>
       <button type="button" id="infoBtn" class="icon-btn" aria-label="אודות האפליקציה" title="טכנולוגיות ואמצעים">ℹ</button>
       <button type="button" id="settingsBtn" class="icon-btn" aria-label="הגדרות אפליקציה" title="צבע וגודל">⚙</button>
       <button type="button" id="resetBtn" class="btn-reset" aria-label="איפוס כל המשימות">איפוס</button>
     </div>
   </header>
+
+  <!-- התחברות / רישום -->
+  <div id="authOverlay" class="settings-overlay" hidden aria-hidden="true"></div>
+  <div id="authPanel" class="auth-panel" hidden aria-hidden="true" role="dialog" aria-labelledby="authTitle" aria-modal="true">
+    <h3 id="authTitle">התחברות לחשבון</h3>
+    <div class="auth-tabs">
+      <button type="button" id="authTabLogin" class="auth-tab active">התחברות</button>
+      <button type="button" id="authTabRegister" class="auth-tab">רישום</button>
+    </div>
+
+    <div id="authFormLogin" class="auth-form">
+      <label>טלפון</label>
+      <input type="tel" id="loginPhone" placeholder="למשל 050-1234567" aria-label="מספר טלפון" autocomplete="tel" />
+      <label>סיסמה</label>
+      <input type="password" id="loginPassword" placeholder="הסיסמה שלך" aria-label="סיסמה" autocomplete="current-password" />
+      <button type="button" id="loginSubmitBtn" class="btn-auth-submit">התחבר</button>
+    </div>
+
+    <div id="authFormRegister" class="auth-form hidden">
+      <label>שם מלא</label>
+      <input type="text" id="registerName" placeholder="השם המלא שלך" aria-label="שם מלא" autocomplete="name" />
+      <label>טלפון</label>
+      <input type="tel" id="registerPhone" placeholder="למשל 050-1234567" aria-label="מספר טלפון" autocomplete="tel" />
+      <label>סיסמה</label>
+      <input type="password" id="registerPassword" placeholder="בחר סיסמה" aria-label="סיסמה" autocomplete="new-password" />
+      <button type="button" id="registerSubmitBtn" class="btn-auth-submit">הירשם</button>
+    </div>
+
+    <p class="auth-note">רק משתמשים רשומים יכולים לערוך משימות ולשמור למועדפים.</p>
+    <button type="button" id="closeAuthBtn" class="btn-close">סגור</button>
+  </div>
 
   <!-- overlay להגדרות -->
   <div id="settingsOverlay" class="settings-overlay" hidden aria-hidden="true"></div>
@@ -83,6 +119,7 @@
       <button type="button" id="filterAll" class="filter-btn active" aria-pressed="true">הכל</button>
       <button type="button" id="filterActive" class="filter-btn" aria-pressed="false">פעילות</button>
       <button type="button" id="filterCompleted" class="filter-btn" aria-pressed="false">הושלמו</button>
+      <button type="button" id="filterFavorites" class="filter-btn" aria-pressed="false">⭐ מועדפים</button>
     </div>
 
     <!-- חלק רשימת המשימות -->
@@ -127,8 +164,10 @@
       <p>מדריך קצר לפני שמתחילים:</p>
       <ol>
         <li><strong>הוספת משימה</strong> – הזן תיאור ולחץ "הוסף משימה" (או Enter)</li>
+        <li><strong>התחברות</strong> – לחץ "התחבר / הירשם" ליצירת חשבון (שם מלא, טלפון, סיסמה) או להתחברות</li>
+        <li><strong>עריכה ומועדפים</strong> – רק משתמשים מחוברים יכולים לערוך משימות (✎) ולשמור למועדפים (⭐)</li>
         <li><strong>חיפוש</strong> – השתמש בשורת החיפוש למציאת משימות לפי טקסט או תאריך</li>
-        <li><strong>סינון</strong> – הכל, פעילות או הושלמו</li>
+        <li><strong>סינון</strong> – הכל, פעילות, הושלמו או מועדפים</li>
         <li><strong>מיון</strong> – מיון לפי תאריך יעד</li>
         <li><strong>הגדרות</strong> – ⚙ לשינוי צבע וגודל</li>
       </ol>
