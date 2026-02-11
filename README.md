@@ -147,6 +147,37 @@ dist/
 
 ---
 
+## 🔗 הגדרת Git (Remote)
+
+אם מופיעה האזהרה *"Your repository has no remotes configured to push to"* – יש לחבר את הפרויקט לריפוזיטורי מרוחק (GitHub, GitLab וכו׳).
+
+### שלב 1: יצירת ריפוזיטורי
+1. היכנסו ל-[GitHub](https://github.com) ונווטו ל־**New repository**
+2. קבעו שם (למשל: `task-manager`), בחרו Public
+3. **אל תסמנו** "Add a README" – הפרויקט כבר קיים
+4. לחצו **Create repository**
+
+### שלב 2: חיבור ה-Remote
+בטרמינל, מתוך תיקיית הפרויקט:
+
+```bash
+git remote add origin https://github.com/שם_המשתמש/שם_הריפוזיטורי.git
+```
+
+החליפו `שם_המשתמש` ו-`שם_הריפוזיטורי` בנתונים שלכם (למשל: `https://github.com/johndoe/task-manager.git`).
+
+### שלב 3: דחיפה (Push)
+```bash
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git push -u origin main
+```
+
+> 💡 אם הגרסה הראשונה כבר קיימת ב-GitHub, אולי תצטרכו `git pull origin main --allow-unrelated-histories` לפני ה-push.
+
+---
+
 ## 📄 רישיון
 
 פרויקט לימודי – ניהול משימות אישיות © 2026
