@@ -166,7 +166,9 @@ git remote add origin https://github.com/שם_המשתמש/שם_הריפוזיט
 
 החליפו `שם_המשתמש` ו-`שם_הריפוזיטורי` בנתונים שלכם (למשל: `https://github.com/johndoe/task-manager.git`).
 
-### שלב 3: דחיפה (Push)
+### שלב 3: דחיפה (Push) – **חשוב!**
+יש לבצע דחיפה כדי שהריפוזיטורי ב-GitHub לא יהיה ריק. שגיאות כמו *"repository does not contain the requested branch"* או *"ensure the repository is not empty"* מופיעות כשעדיין לא דחפתם קוד:
+
 ```bash
 git add .
 git commit -m "Initial commit"
@@ -174,7 +176,33 @@ git branch -M main
 git push -u origin main
 ```
 
-> 💡 אם הגרסה הראשונה כבר קיימת ב-GitHub, אולי תצטרכו `git pull origin main --allow-unrelated-histories` לפני ה-push.
+> ⚠️ **אם הריפוזיטורי ריק** – שירותים כמו Vercel, Netlify או GitHub Pages לא ימצאו ענף. הרצת הפקודות למעלה פותרת את הבעיה.
+
+---
+
+## ❓ פתרון בעיות
+
+### "The repository does not contain the requested branch" / "ensure the repository is not empty"
+
+**סיבה:** הריפוזיטורי ב-GitHub ריק – אין עדיין קומיטים או ענף `main`.
+
+**פתרון:** הרצה בטרמינל מתוך תיקיית הפרויקט:
+
+```bash
+# בדיקה שיש remote
+git remote -v
+
+# אם חסר – הוסיפו (החליפו בכתובת שלכם):
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
+
+# יצירת קומיט ראשון ודחיפה
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git push -u origin main
+```
+
+לאחר הדחיפה הריפוזיטורי לא יהיה ריק והשגיאה תיפתר.
 
 ---
 

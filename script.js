@@ -14,8 +14,8 @@ var sortByDateBtn = document.getElementById('sortByDateBtn');
 var taskList = document.getElementById('taskList');
 
 // ========== State ==========
-let tasks = [];
-let currentFilter = 'all';
+var tasks = [];
+var currentFilter = 'all';
 
 // ========== localStorage Functions ==========
 
@@ -27,7 +27,8 @@ function getTasks() {
   var data = localStorage.getItem('tasks');
   if (data) {
     try {
-      return JSON.parse(data);
+      var parsed = JSON.parse(data);
+      return Array.isArray(parsed) ? parsed : [];
     } catch (e) {
       console.error('שגיאה בפענוח נתונים:', e);
       return [];
@@ -78,8 +79,10 @@ function filterTasks(tasksArray, filter) {
  */
 function sortTasks(tasksArray) {
   return tasksArray.slice().sort(function (a, b) {
-    var dateA = new Date(a.dueDate || 0);
-    var dateB = new Date(b.dueDate || 0);
+    var dateA = new Date(a.dueDate || 0).getTime();
+    var dateB = new Date(b.dueDate || 0).getTime();
+    if (isNaN(dateA)) dateA = 0;
+    if (isNaN(dateB)) dateB = 0;
     return dateA - dateB;
   });
 }
@@ -90,6 +93,7 @@ function sortTasks(tasksArray) {
  * מעדכן את תצוגת רשימת המשימות
  */
 function renderTasks() {
+  if (!taskList) return;
   taskList.innerHTML = '';
   var filtered = filterTasks(tasks, currentFilter);
 
@@ -147,8 +151,9 @@ function renderTasks() {
  * מוסיף משימה חדשה
  */
 function addTask() {
+  if (!taskInput) return;
   var text = taskInput.value.trim();
-  var dueDate = dueDateInput.value;
+  var dueDate = dueDateInput ? dueDateInput.value : '';
 
   if (!text) {
     alert('יש להזין תיאור למשימה');
@@ -167,7 +172,7 @@ function addTask() {
   renderTasks();
 
   taskInput.value = '';
-  dueDateInput.value = '';
+  if (dueDateInput) dueDateInput.value = '';
 }
 
 // ========== Toggle Complete ==========
@@ -214,9 +219,9 @@ function deleteTask(id) {
 function setFilter(filter) {
   currentFilter = filter;
   // תאימות: classList.toggle עם פרמטר שני לא נתמך בדפדפנים ישנים
-  filterAllBtn.classList[filter === 'all' ? 'add' : 'remove']('active');
-  filterActiveBtn.classList[filter === 'active' ? 'add' : 'remove']('active');
-  filterCompletedBtn.classList[filter === 'completed' ? 'add' : 'remove']('active');
+  if (filterAllBtn) filterAllBtn.classList[filter === 'all' ? 'add' : 'remove']('active');
+  if (filterActiveBtn) filterActiveBtn.classList[filter === 'active' ? 'add' : 'remove']('active');
+  if (filterCompletedBtn) filterCompletedBtn.classList[filter === 'completed' ? 'add' : 'remove']('active');
   renderTasks();
 }
 
@@ -270,12 +275,12 @@ function fetchFromAPI(url) {
 function fetchInitialTasks() {
   fetchFromAPI(API_URL)
     .then(function (data) {
-      var mappedTasks = data.map(function (item) {
+      var mappedTasks = (Array.isArray(data) ? data : []).map(function (item) {
         return {
-          id: item.id + 100000,
-          text: item.title,
+          id: (item && item.id ? item.id : 0) + 100000,
+          text: (item && item.title) ? item.title : 'משימה',
           dueDate: null,
-          completed: item.completed,
+          completed: !!(item && item.completed),
         };
       });
 
@@ -293,36 +298,50 @@ function fetchInitialTasks() {
 
 // ========== Event Listeners ==========
 
-addTaskBtn.addEventListener('click', function () {
-  addTask();
-});
+function initEventListeners() {
+  if (!addTaskBtn || !taskInput || !taskList) {
+    console.error('Task Manager: לא נמצאו אלמנטים נדרשים ב-DOM');
+    return;
+  }
 
-// הוספת משימה בלחיצת Enter (תאימות: keyCode לדפדפנים ישנים)
-taskInput.addEventListener('keypress', function (e) {
-  var key = e.key || e.keyCode;
-  if (key === 'Enter' || key === 13) addTask();
-});
+  addTaskBtn.addEventListener('click', function () {
+    addTask();
+  });
 
-filterAllBtn.addEventListener('click', function () {
-  setFilter('all');
-});
-filterActiveBtn.addEventListener('click', function () {
-  setFilter('active');
-});
-filterCompletedBtn.addEventListener('click', function () {
-  setFilter('completed');
-});
+  // הוספת משימה בלחיצת Enter (תאימות: keyCode לדפדפנים ישנים)
+  taskInput.addEventListener('keypress', function (e) {
+    var key = e.key || e.keyCode;
+    if (key === 'Enter' || key === 13) addTask();
+  });
 
-sortByDateBtn.addEventListener('click', function () {
-  tasks = sortTasks(tasks);
-  saveTasks(tasks);
-  renderTasks();
-});
+  if (filterAllBtn) filterAllBtn.addEventListener('click', function () {
+    setFilter('all');
+  });
+  if (filterActiveBtn) filterActiveBtn.addEventListener('click', function () {
+    setFilter('active');
+  });
+  if (filterCompletedBtn) filterCompletedBtn.addEventListener('click', function () {
+    setFilter('completed');
+  });
+
+  if (sortByDateBtn) sortByDateBtn.addEventListener('click', function () {
+    tasks = sortTasks(tasks);
+    saveTasks(tasks);
+    renderTasks();
+  });
+}
 
 // ========== Initialize ==========
 
-// טעינת משימות קיימות בעת טעינת הדף
-tasks = getTasks();
+function init() {
+  tasks = getTasks();
+  initEventListeners();
+  fetchInitialTasks();
+}
 
-// טעינת משימות מ-API בעת טעינת הדף
-fetchInitialTasks();
+// הפעלה כשהדף נטען (תאימות לדפדפנים שונים)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
