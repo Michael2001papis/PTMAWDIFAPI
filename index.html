@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="אפליקציית ניהול משימות אישיות - הוסף, סנן, מיין משימות. localStorage, Fetch API, responsive.">
+  <meta name="description" content="אפליקציית ניהול משימות אישיות - הוסף, ערוך, סנן, מועדפים. התחברות, localStorage, Fetch API, responsive.">
   <title>Task Manager – ניהול משימות</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -64,7 +64,7 @@
       <label>טלפון</label>
       <input type="tel" id="registerPhone" placeholder="למשל 050-1234567" aria-label="מספר טלפון" autocomplete="tel" />
       <label>סיסמה</label>
-      <input type="password" id="registerPassword" placeholder="בחר סיסמה" aria-label="סיסמה" autocomplete="new-password" />
+      <input type="password" id="registerPassword" placeholder="בחר סיסמה (מינימום 4 תווים)" aria-label="סיסמה" autocomplete="new-password" minlength="4" />
       <button type="button" id="registerSubmitBtn" class="btn-auth-submit">הירשם</button>
     </div>
 
@@ -147,7 +147,7 @@
         <li><strong>HTML5</strong> – תגיות סמנטיות, טפסים, מבנה נגיש</li>
         <li><strong>CSS3</strong> – Flexbox, Transitions, Media Queries, משתנים</li>
         <li><strong>JavaScript</strong> – DOM, Event Listeners, JSON</li>
-        <li><strong>Web Storage API</strong> – localStorage לאחסון מקומי</li>
+        <li><strong>Web Storage API</strong> – localStorage לאחסון משימות ומשתמשים</li>
         <li><strong>Fetch API</strong> – יבוא נתונים מ-JSONPlaceholder</li>
         <li><strong>Vite</strong> – בנייה ואופטימיזציה</li>
       </ul>

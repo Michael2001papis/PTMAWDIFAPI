@@ -155,6 +155,10 @@ function register(fullName, phone, password) {
     showMessage('יש למלא שם מלא, טלפון וסיסמה');
     return false;
   }
+  if (pwd.length < 4) {
+    showMessage('הסיסמה חייבת להכיל לפחות 4 תווים');
+    return false;
+  }
 
   var users = getUsers();
   for (var i = 0; i < users.length; i++) {
@@ -287,7 +291,12 @@ function renderTasks() {
   if (filtered.length === 0) {
     var emptyMsg = document.createElement('li');
     emptyMsg.className = 'empty-state';
-    emptyMsg.innerHTML = '<span class="empty-text">אין משימות. הוסף משימה חדשה למעלה!</span>';
+    var txt = 'אין משימות. הוסף משימה חדשה למעלה!';
+    if (searchQuery && searchQuery.trim()) txt = 'לא נמצאו משימות התואמות את החיפוש.';
+    else if (currentFilter === 'favorites') txt = 'אין משימות מועדפות. לחץ ⭐ ליד משימה כדי לשמור.';
+    else if (currentFilter === 'completed') txt = 'אין משימות שהושלמו.';
+    else if (currentFilter === 'active' && tasks.length > 0) txt = 'כל המשימות הושלמו!';
+    emptyMsg.innerHTML = '<span class="empty-text">' + txt + '</span>';
     taskList.appendChild(emptyMsg);
     return;
   }
@@ -738,7 +747,8 @@ function initEventListeners() {
 
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' || e.keyCode === 27) {
-      if (authPanel && !authPanel.hidden) closeAuth();
+      if (tutorialOverlay && !tutorialOverlay.classList.contains('hidden')) finishTutorial();
+      else if (authPanel && !authPanel.hidden) closeAuth();
       else if (settingsPanel && !settingsPanel.hidden) closeSettings();
       else if (infoPanel && !infoPanel.hidden) closeInfo();
     }

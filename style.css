@@ -28,6 +28,13 @@
   box-sizing: border-box;
 }
 
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 body {
   font-family: 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg-body);
@@ -218,6 +225,8 @@ header h1 {
   z-index: 1000;
   max-width: 360px;
   width: 90%;
+  -webkit-animation: panelIn 0.25s ease;
+  animation: panelIn 0.25s ease;
 }
 
 .auth-panel h3 {
@@ -364,6 +373,8 @@ header h1 {
   color: var(--text-muted);
   border-radius: 8px;
   width: 100%;
+  cursor: pointer;
+  border: 1px solid transparent;
 }
 
 .btn-close:hover {
@@ -795,14 +806,16 @@ button {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 2.5rem 2rem;
   background: transparent;
   border: 1px dashed var(--border);
+  text-align: center;
 }
 
 .empty-text {
   color: var(--text-muted);
   font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 /* הודעות */
@@ -812,8 +825,17 @@ button {
   color: var(--accent);
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
-  -webkit-animation: fadeIn 0.3s ease;
-  animation: fadeIn 0.3s ease;
+  -webkit-animation: slideIn 0.35s ease;
+  animation: slideIn 0.35s ease;
+}
+
+@-webkit-keyframes slideIn {
+  from { opacity: 0; -webkit-transform: translateY(-8px); transform: translateY(-8px); }
+  to { opacity: 1; -webkit-transform: translateY(0); transform: translateY(0); }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @-webkit-keyframes fadeIn {
