@@ -336,12 +336,21 @@ function initEventListeners() {
 function init() {
   tasks = getTasks();
   initEventListeners();
-  fetchInitialTasks();
+  renderTasks(); // הצגה מיידית מהמטמון
+  // דחיית טעינת API ל-tick נפרד - מפחית "Long task" ומשפר ביצועים
+  setTimeout(function () {
+    fetchInitialTasks();
+  }, 0);
 }
 
-// הפעלה כשהדף נטען (תאימות לדפדפנים שונים)
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
+// הפעלה כשהדף נטען - דחייה ל-tick הבא כדי לא לחסום את הציור הראשוני
+function runInit() {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(init, 0);
+    });
+  } else {
+    setTimeout(init, 0);
+  }
 }
+runInit();

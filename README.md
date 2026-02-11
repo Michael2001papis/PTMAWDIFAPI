@@ -213,6 +213,8 @@ git remote remove origin
 
 - **404 על script.js:** נוספה הגדרת `base` דינמית – האתר אמור לעבוד גם ב-GitHub Pages וגם מקומית. לאחר שינויים – הרצת `npm run build` ודחיפה ל-GitHub.
 - **Unexpected token 'export' (chrome-extension://...):** שגיאה מתוסף בדפדפן, לא מהקוד שלכם. ניתן להתעלם ממנה או לכבות הרחבות לבדיקה.
+- **"export {a as __webpack_require__}":** מגיע מתוסף Chrome (לא מהאפליקציה). להתעלם או לכבות תוספים.
+- **"Long task took X ms":** צומצם באמצעות דחיית אתחול ל-setTimeout והטענת ה-script במצב async.
 
 ### "The repository does not contain the requested branch" / "ensure the repository is not empty"
 
