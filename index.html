@@ -7,8 +7,14 @@
   <title>Task Manager</title>
   <script>
     (function() {
-      var isGhPages = location.hostname.indexOf('github.io') !== -1 && location.protocol === 'https:';
-      var base = isGhPages ? '/PTMAWDIFAPI/' : './';
+      var h = location.hostname, base;
+      if (h.indexOf('github.io') !== -1 && location.protocol === 'https:') {
+        base = '/PTMAWDIFAPI/';
+      } else if (h.indexOf('vercel.app') !== -1) {
+        base = '/';
+      } else {
+        base = './';
+      }
       var link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = base + 'style.css';
@@ -49,11 +55,17 @@
 
   <script>
     (function() {
-      var isGhPages = location.hostname.indexOf('github.io') !== -1 && location.protocol === 'https:';
-      var base = isGhPages ? '/PTMAWDIFAPI/' : './';
+      var h = location.hostname, base;
+      if (h.indexOf('github.io') !== -1 && location.protocol === 'https:') {
+        base = '/PTMAWDIFAPI/';
+      } else if (h.indexOf('vercel.app') !== -1) {
+        base = '/';
+      } else {
+        base = './';
+      }
       var s = document.createElement('script');
       s.src = base + 'script.js';
-      s.async = true; // טעינה לא חוסמת - מפחית Long task
+      s.async = true;
       document.body.appendChild(s);
     })();
   </script>

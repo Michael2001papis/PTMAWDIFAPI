@@ -73,6 +73,7 @@ PTMAWDIFAPI/
 ├── vite.config.js    # הגדרות בניית Vite
 ├── .gitignore         # קבצים להתעלמות (node_modules, dist)
 ├── push-to-github.bat # סקריפט להעלאה ל-GitHub
+├── vercel.json        # הגדרות Vercel (אופציונלי)
 └── README.md          # קובץ זה
 ```
 
@@ -215,6 +216,7 @@ git remote remove origin
 - **Unexpected token 'export' (chrome-extension://...):** שגיאה מתוסף בדפדפן, לא מהקוד שלכם. ניתן להתעלם ממנה או לכבות הרחבות לבדיקה.
 - **"export {a as __webpack_require__}":** מגיע מתוסף Chrome (לא מהאפליקציה). להתעלם או לכבות תוספים.
 - **"Long task took X ms":** צומצם באמצעות דחיית אתחול ל-setTimeout והטענת ה-script במצב async.
+- **404 ב-Vercel (ptmawdifapi.vercel.app):** נוספה תמיכה ב-Vercel – הנתיבים משתמשים ב־`/` כ-root. `vercel.json` מבטיח שמירת הקבצים בלי build.
 
 ### "The repository does not contain the requested branch" / "ensure the repository is not empty"
 
