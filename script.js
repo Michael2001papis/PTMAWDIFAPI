@@ -31,6 +31,11 @@ var filterActiveBtn = document.getElementById('filterActive');
 var filterCompletedBtn = document.getElementById('filterCompleted');
 var sortByDateBtn = document.getElementById('sortByDateBtn');
 var taskList = document.getElementById('taskList');
+var resetBtn = document.getElementById('resetBtn');
+var settingsBtn = document.getElementById('settingsBtn');
+var settingsPanel = document.getElementById('settingsPanel');
+var settingsOverlay = document.getElementById('settingsOverlay');
+var closeSettingsBtn = document.getElementById('closeSettingsBtn');
 
 // ========== State ==========
 var tasks = [];
@@ -192,7 +197,7 @@ function addTask() {
 
   var newTask = {
     id: Date.now(),
-    text: text,
+    text: text.substring(0, 500),
     dueDate: dueDate || null,
     completed: false,
   };
@@ -368,11 +373,125 @@ function initEventListeners() {
     saveTasks(tasks);
     renderTasks();
   });
+
+  if (resetBtn) resetBtn.addEventListener('click', resetAllTasks);
+  if (settingsBtn) settingsBtn.addEventListener('click', openSettings);
+  if (closeSettingsBtn) closeSettingsBtn.addEventListener('click', closeSettings);
+  if (settingsOverlay) settingsOverlay.addEventListener('click', closeSettings);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' || e.keyCode === 27) {
+      if (settingsPanel && !settingsPanel.hidden) closeSettings();
+    }
+  });
+}
+
+// ========== איפוס ==========
+function resetAllTasks() {
+  if (!confirm('למחוק את כל המשימות? לא ניתן לבטל.')) return;
+  tasks = [];
+  saveTasks(tasks);
+  currentFilter = 'all';
+  if (filterAllBtn) setFilter('all');
+  renderTasks();
+  showMessage('כל המשימות אופסו');
+}
+
+// ========== הגדרות (צבע וגודל) ==========
+function getSettings() {
+  try {
+    var s = localStorage.getItem('taskManagerSettings');
+    return s ? JSON.parse(s) : { theme: 'dark', size: 'medium' };
+  } catch (e) {
+    return { theme: 'dark', size: 'medium' };
+  }
+}
+
+function saveSettings(settings) {
+  localStorage.setItem('taskManagerSettings', JSON.stringify(settings));
+}
+
+function applySettings(settings) {
+  var body = document.body;
+  body.classList.remove('theme-dark', 'theme-light', 'theme-coral', 'theme-blue');
+  body.classList.remove('size-small', 'size-medium', 'size-large');
+  body.classList.add('theme-' + (settings.theme || 'dark'));
+  body.classList.add('size-' + (settings.size || 'medium'));
+}
+
+function openSettings() {
+  if (settingsPanel) {
+    settingsPanel.hidden = false;
+    settingsPanel.setAttribute('aria-hidden', 'false');
+    var firstBtn = settingsPanel.querySelector('.theme-btn');
+    if (firstBtn) firstBtn.focus();
+  }
+  if (settingsOverlay) {
+    settingsOverlay.hidden = false;
+    settingsOverlay.setAttribute('aria-hidden', 'false');
+  }
+  document.body.style.overflow = 'hidden';
+  var s = getSettings();
+  var themeBtns = document.querySelectorAll('.theme-btn');
+  for (var i = 0; i < themeBtns.length; i++) {
+    themeBtns[i].classList.toggle('active', themeBtns[i].getAttribute('data-theme') === s.theme);
+  }
+  var sizeBtns = document.querySelectorAll('.size-btn');
+  for (var j = 0; j < sizeBtns.length; j++) {
+    sizeBtns[j].classList.toggle('active', sizeBtns[j].getAttribute('data-size') === s.size);
+  }
+}
+
+function closeSettings() {
+  if (settingsPanel) {
+    settingsPanel.hidden = true;
+    settingsPanel.setAttribute('aria-hidden', 'true');
+  }
+  if (settingsOverlay) {
+    settingsOverlay.hidden = true;
+    settingsOverlay.setAttribute('aria-hidden', 'true');
+  }
+  document.body.style.overflow = '';
+  if (settingsBtn) settingsBtn.focus();
+}
+
+function initSettings() {
+  var s = getSettings();
+  applySettings(s);
+
+  var themeBtns = document.querySelectorAll('.theme-btn');
+  for (var i = 0; i < themeBtns.length; i++) {
+    (function (btn) {
+      btn.addEventListener('click', function () {
+        s.theme = btn.getAttribute('data-theme');
+        saveSettings(s);
+        applySettings(s);
+        for (var k = 0; k < themeBtns.length; k++) {
+          themeBtns[k].classList.toggle('active', themeBtns[k] === btn);
+        }
+      });
+    })(themeBtns[i]);
+  }
+
+  var sizeBtns = document.querySelectorAll('.size-btn');
+  for (var j = 0; j < sizeBtns.length; j++) {
+    (function (btn) {
+      btn.addEventListener('click', function () {
+        s.size = btn.getAttribute('data-size');
+        saveSettings(s);
+        applySettings(s);
+        for (var k = 0; k < sizeBtns.length; k++) {
+          sizeBtns[k].classList.toggle('active', sizeBtns[k] === btn);
+        }
+      });
+    })(sizeBtns[j]);
+  }
 }
 
 // ========== Initialize ==========
 
 function init() {
+  initSettings();
   tasks = getTasks();
   initEventListeners();
   renderTasks(); // הצגה מיידית מהמטמון

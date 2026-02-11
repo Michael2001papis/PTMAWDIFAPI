@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="אפליקציית ניהול משימות אישיות - הוסף, ערוך, סנן ומיין משימות">
+  <meta name="description" content="אפליקציית ניהול משימות אישיות - הוסף, סנן, מיין משימות. localStorage, Fetch API, responsive.">
   <title>Task Manager – ניהול משימות</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,12 +29,41 @@
 <body>
   <header>
     <h1>Task Manager</h1>
+    <div class="header-actions">
+      <button type="button" id="settingsBtn" class="icon-btn" aria-label="הגדרות אפליקציה" title="צבע וגודל">⚙</button>
+      <button type="button" id="resetBtn" class="btn-reset" aria-label="איפוס כל המשימות">איפוס</button>
+    </div>
   </header>
+
+  <!-- overlay להגדרות -->
+  <div id="settingsOverlay" class="settings-overlay" hidden aria-hidden="true"></div>
+  <!-- פאנל הגדרות -->
+  <div id="settingsPanel" class="settings-panel" hidden aria-hidden="true" role="dialog" aria-labelledby="settingsTitle" aria-modal="true">
+    <h3 id="settingsTitle">הגדרות</h3>
+    <div class="settings-group">
+      <label>צבע:</label>
+      <div class="theme-options">
+        <button type="button" class="theme-btn" data-theme="dark" title="כהה">●</button>
+        <button type="button" class="theme-btn" data-theme="light" title="בהיר">○</button>
+        <button type="button" class="theme-btn" data-theme="coral" title="קורל">●</button>
+        <button type="button" class="theme-btn" data-theme="blue" title="כחול">●</button>
+      </div>
+    </div>
+    <div class="settings-group">
+      <label>גודל טקסט:</label>
+      <div class="size-options">
+        <button type="button" class="size-btn" data-size="small">קטן</button>
+        <button type="button" class="size-btn" data-size="medium">בינוני</button>
+        <button type="button" class="size-btn" data-size="large">גדול</button>
+      </div>
+    </div>
+    <button type="button" id="closeSettingsBtn" class="btn-close">סגור</button>
+  </div>
 
   <main>
     <!-- חלק קלט המשימות -->
     <div class="task-input-section">
-      <input type="text" id="taskInput" placeholder="הזן תיאור המשימה..." aria-label="תיאור המשימה" autocomplete="off" />
+      <input type="text" id="taskInput" placeholder="הזן תיאור המשימה..." aria-label="תיאור המשימה" autocomplete="off" maxlength="500" />
       <input type="date" id="dueDateInput" aria-label="תאריך יעד" />
       <button type="button" id="addTaskBtn" aria-label="הוסף משימה">הוסף משימה</button>
     </div>
